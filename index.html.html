@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Journey Optimization – CEO Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            margin: 0;
+            padding: 1rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .mobile-metrics-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .mobile-metrics-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .metric-card {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #e5e7eb;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .metric-card h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.2;
+        }
+        
+        .metric-card p {
+            margin: 0.25rem 0 0;
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+        
+        .highlight {
+            color: #10b981 !important;
+        }
+        
+        .critical {
+            color: #ef4444 !important;
+        }
+        
+        .warning {
+            color: #f59e0b !important;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .section h3 {
+            margin: 0 0 1rem 0;
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .objectives-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+        }
+        
+        .objectives-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .objectives-list li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .progress-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .progress-value {
+            font-weight: 700;
+            color: #1f2937;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .doughnut-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .doughnut-chart {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(
+                var(--progress-color) 0deg var(--progress-angle),
+                #e5e7eb var(--progress-angle) 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .doughnut-chart::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .doughnut-center {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            z-index: 1;
+        }
+        
+        .progress-reviewed { background-color: #10b981; }
+        .progress-implemented { background-color: #3b82f6; }
+        .progress-pending { background-color: #f59e0b; }
+        
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .channel-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .channel-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .channel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .channel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .channel-count {
+            background: #f3f4f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        
+        .channel-progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .channel-progress-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .channel-progress-content {
+            flex: 1;
+            margin-right: 1rem;
+        }
+        
+        .channel-progress-label {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .channel-progress-bar-container {
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 8px;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .channel-progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.8s ease-in-out;
+        }
+        
+        .channel-progress-value {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.9rem;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background: white;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .journey-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .journey-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+        
+        .journey-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+        
+        .journey-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .journey-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .journey-comment {
+            color: #6b7280;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            max-width: 300px;
+        }
+        
+        .journey-channel {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .journey-complexity {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .target-date-input {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            width: 120px;
+            background: white;
+        }
+        
+        .target-date-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .status-pill {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+        
+        .status-in-progress { background-color: #3b82f6; }
+        .status-pending { background-color: #f59e0b; }
+        .status-blocked { background-color: #ef4444; }
+        .status-completed { background-color: #10b981; }
+        
+        .footer {
+            background: #f3f4f6;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .footer strong {
+            color: #1f2937;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .mobile-metrics-container {
+                gap: 0.75rem;
+            }
+            
+            .mobile-metrics-column {
+                gap: 0.75rem;
+            }
+            
+            .metric-card {
+                padding: 0.5rem;
+                min-height: 80px;
+            }
+            
+            .metric-card h2 {
+                font-size: 1.2rem;
+            }
+            
+            .metric-card p {
+                font-size: 0.7rem;
+            }
+            
+            .filters-container {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            
+            .filter-group {
+                min-width: auto;
+            }
+            
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .header p {
+                font-size: 0.95rem;
+            }
+            
+            .channels-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .channel-card {
+                padding: 1rem;
+            }
+            
+            .channel-title {
+                font-size: 1rem;
+            }
+            
+            .channel-count {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            .channel-progress-label {
+                font-size: 0.8rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .channel-progress-value {
+                font-size: 0.8rem;
+                min-width: 35px;
+            }
+            
+            .channel-progress-item {
+                margin-bottom: 0.75rem;
+            }
+            
+            .channel-progress-content {
+                margin-right: 0.75rem;
+            }
+            
+            .journey-table th {
+                font-size: 0.8rem;
+                padding: 0.75rem;
+            }
+            
+            .journey-table td {
+                padding: 0.75rem;
+            }
+            
+            .journey-name {
+                font-size: 0.85rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .journey-comment {
+                font-size: 0.75rem;
+                max-width: 200px;
+            }
+            
+            .journey-channel {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+            
+            .journey-complexity {
+                font-size: 0.75rem;
+            }
+            
+            .target-date-input {
+                width: 100px;
+                padding: 0.25rem;
+                font-size: 0.75rem;
+            }
+            
+            .journey-table {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Customer Journey Optimization</h1>
+            <p>Executive Dashboard – Real-time Performance Tracking</p>
+        </div>
+
+        <div class="content">
+            <!-- Key Metrics -->
+            <div class="mobile-metrics-container">
+                <!-- Left Column -->
+                <div class="mobile-metrics-column">
+                    <div class="metric-card">
+                        <h2>224</h2>
+                        <p>Total Journeys</p>
+                    </div>
+                    <div class="metric-card">
+                        <h2>305</h2>
+                        <p>SMS Content</p>
+                    </div>
+                    <div class="metric-card">
+                        <h2>12,892</h2>
+                        <p>Mobile Content</p>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="mobile-metrics-column">
+                    <div class="metric-card">
+                        <h2 class="highlight">100%</h2>
+                        <p>Reviewed</p>
+                    </div>
+                    <div class="metric-card">
+                        <h2 class="highlight">45%</h2>
+                        <p>Enhanced</p>
+                    </div>
+                    <div class="metric-card">
+                        <h2 class="critical">0%</h2>
+                        <p>ATM Implemented</p>
+                        <p style="font-size: 0.7rem; color: #ef4444; margin-top: 0.25rem; font-style: italic;">Will not change till EOY</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Progress -->
+            <div class="section">
+                <h3>Overall Progress</h3>
+                <div class="progress-container">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div class="progress-item">
+                            <div class="progress-label">Reviewed</div>
+                            <div class="doughnut-container">
+                                <div class="doughnut-chart" style="--progress-color: #10b981; --progress-angle: 360deg;">
+                                    <div class="doughnut-center">100%</div>
+                                </div>
+                            </div>
+                            <div class="progress-value">224 (100%)</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-label">Enhancements Implemented</div>
+                            <div class="doughnut-container">
+                                <div class="doughnut-chart" style="--progress-color: #3b82f6; --progress-angle: 162deg;">
+                                    <div class="doughnut-center">45%</div>
+                                </div>
+                            </div>
+                            <div class="progress-value">100 (45%)</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-label">Journeys in Progress</div>
+                            <div class="doughnut-container">
+                                <div class="doughnut-chart" style="--progress-color: #f59e0b; --progress-angle: 198deg;">
+                                    <div class="doughnut-center">55%</div>
+                                </div>
+                            </div>
+                            <div class="progress-value">124 (55%)</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-label">SMS Content</div>
+                            <div class="doughnut-container">
+                                <div class="doughnut-chart" style="--progress-color: #8b5cf6; --progress-angle: 356.4deg;">
+                                    <div class="doughnut-center">99%</div>
+                                </div>
+                            </div>
+                            <div class="progress-value">305 (99%)</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-label">Application Content</div>
+                            <div class="doughnut-container">
+                                <div class="doughnut-chart" style="--progress-color: #06b6d4; --progress-angle: 356.4deg;">
+                                    <div class="doughnut-center">99%</div>
+                                </div>
+                            </div>
+                            <div class="progress-value">12,892 (99%)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channel Progress -->
+            <div class="section">
+                <h3>Progress by Channel</h3>
+                <div class="channels-grid" id="channelsGrid">
+                    <!-- Channels will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Key Objectives -->
+            <div class="section">
+                <h3>Key Objectives</h3>
+                <ul class="objectives-list">
+                    <li>Optimize 224 customer journeys</li>
+                    <li>Faster turnaround time</li>
+                    <li>Improved customer satisfaction</li>
+                    <li>Operational cost efficiency</li>
+                    <li>Increased digital channel adoption</li>
+                </ul>
+            </div>
+
+            <!-- Weekly Highlight -->
+            <div class="section">
+                <h3>Weekly Highlight</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #374151; font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">Example of Enhanced Journeys</h4>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h5 style="color: #1f2937; font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Application</h5>
+                        <div style="color: #4b5563; line-height: 1.6;">
+                            <p style="margin-bottom: 1rem;"><strong>1. Notification disclaimer:</strong> revised wording in order to provide a clear message and reduce visual clutter as previous disclaimer had a confirmation question in bold and repeated again.</p>
+                            <p style="margin-bottom: 0;"><strong>2. Multiple transfer transactions:</strong> amount field if left empty was providing a message in red "Required" and if the amount exceeded the account balance it gave a message "Invalid amount" the same in Arabic, currently the amount field if left empty it will give a message in red "Enter amount" and if amount exceeds the account balance it gives a message "Insufficient balance" this is also applied to the Arabic version.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dependencies -->
+            <div class="section">
+                <h3>Dependencies</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #374151; font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">Channel</h4>
+                    <div style="color: #4b5563; line-height: 1.6;">
+                        <p style="margin-bottom: 1rem;"><strong>1. KIB mobile:</strong> tied to digital factory KIB mobile enhancements sprint cycles, periodically (1-2 a month) subject to high priority instructions such as CBK, compliance, audit.</p>
+                        <p style="margin-bottom: 1rem;"><strong>2. ATM:</strong> CR implementation, approximate target date EOY. This is due to vendor enhancement timeline which requires 3 months and ITD integration which requires an additional month.</p>
+                        <p style="margin-bottom: 0;"><strong>3. SMS:</strong> linked with ITD development.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insight -->
+            <div class="section">
+                <h3>AI Insight</h3>
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1.5rem; border-radius: 0.75rem; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #3b82f6; color: white; padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">AI</div>
+                        <div style="color: #1f2937; line-height: 1.6;">
+                            <p style="margin-bottom: 1rem; font-weight: 600;">Analysis reveals a three-tier implementation pattern across channels:</p>
+                            
+                            <p style="margin-bottom: 1rem;"><strong>High Performers (Branches 66%, ITM 67%):</strong> Physical touchpoints show strong execution, likely due to direct staff control and immediate feedback loops. These channels benefit from centralized management and quick iteration capabilities.</p>
+                            
+                            <p style="margin-bottom: 1rem;"><strong>Digital Channels (Application 34%, Contact Center 57%):</strong> The 68 application journeys represent the largest improvement opportunity. With 99% SMS and mobile content optimization complete, the infrastructure exists for rapid digital enhancement scaling.</p>
+                            
+                            <p style="margin-bottom: 1rem;"><strong>Constrained Channel (ATM 0%):</strong> The 22 ATM journeys, while representing 10% of total volume, create a bottleneck effect. However, their complexity classification (all "Complex = 4+ weeks") suggests significant customer impact once implemented.</p>
+                            
+                            <p style="margin-bottom: 0;"><strong>Strategic Recommendation:</strong> Focus immediate resources on the 23 remaining application journeys (68 total - 45 enhanced) to reach 60%+ overall implementation before year-end. This approach maximizes digital customer experience improvements while ATM vendor dependencies resolve.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Journeys -->
+            <div class="section">
+                <h3>Journey Details</h3>
+                
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="channelFilter">Filter by Channel</label>
+                        <select id="channelFilter" class="filter-input">
+                            <option value="">All Channels</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="complexityFilter">Filter by Complexity</label>
+                        <select id="complexityFilter" class="filter-input">
+                            <option value="">All Complexities</option>
+                            <option value="Simple = 1 week">Simple (1 week)</option>
+                            <option value="Moderate = 2-3 weeks">Moderate (2-3 weeks)</option>
+                            <option value="Complex = 4+ weeks">Complex (4+ weeks)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">Filter by Status</label>
+                        <select id="statusFilter" class="filter-input">
+                            <option value="">All Statuses</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="journeysList">
+                    <!-- Journey cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <strong>Last updated:</strong> July 9, 2025 &nbsp;|&nbsp; 
+            <strong>Focus:</strong> Unlock ATM channel, +12 implementations to hit 50% target
+        </div>
+    </div>
+
+    <script>
+        // Complete journey data from JSON
+        const dashboardData = {
+            "journeyData": {
+                "totalJourneys": 224,
+                "smsMessages": 305,
+                "mobileContent": 12892,
+                "journeyReview": 100,
+                "journeyImplement": 45,
+                "smsMessagesProgress": 99,
+                "mobileAppProgress": 99
+            },
+            "objectives": [
+                "Optimize 224 customer journeys",
+                "Faster turnaround time", 
+                "Improved customer satisfaction",
+                "Operational cost efficiency",
+                "Increased digital channel adoption"
+            ],
+            "channelData": [
+                { "channel": "Branches", "count": 35, "review": 100, "implementation": 66 },
+                { "channel": "Application", "count": 68, "review": 100, "implementation": 34 },
+                { "channel": "Contact-center", "count": 79, "review": 100, "implementation": 57 },
+                { "channel": "Atm", "count": 22, "review": 100, "implementation": 0 },
+                { "channel": "Itm", "count": 6, "review": 100, "implementation": 67 },
+                { "channel": "Dst", "count": 9, "review": 100, "implementation": 44 },
+                { "channel": "Black", "count": 4, "review": 100, "implementation": 25 }
+            ],
+            "journeysData": {
+                "applications": [
+                    { "id": 1, "journey": "1.5 Add choice", "comment": "Add choice functionality to application forms", "complexity": "Simple = 1 week", "status": "Pending" }
+                ],
+                "atm": [
+                    { "id": 1751709132656, "journey": "ATM language", "comment": "1. Based on customer profile\n2. Align language preference Ar to the right side and En to the left side", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709149728, "journey": "
