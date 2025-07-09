@@ -46,6 +46,13 @@
             padding: 2rem;
         }
         
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
         .mobile-metrics-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -212,6 +219,20 @@
             z-index: 1;
         }
         
+        .progress-bar-container {
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.8s ease-in-out;
+        }
+        
         .progress-reviewed { background-color: #10b981; }
         .progress-implemented { background-color: #3b82f6; }
         .progress-pending { background-color: #f59e0b; }
@@ -341,75 +362,50 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
-        .journey-table {
-            width: 100%;
-            border-collapse: collapse;
+        .journey-card {
             background: white;
+            border: 1px solid #e5e7eb;
             border-radius: 0.75rem;
+            margin-bottom: 1rem;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s ease;
         }
         
-        .journey-table th {
-            background: #f8fafc;
+        .journey-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .journey-header {
+            cursor: pointer;
             padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
             border-bottom: 1px solid #e5e7eb;
-            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+            gap: 0.75rem;
         }
         
-        .journey-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-            vertical-align: top;
+        .journey-header:hover {
+            background: #f3f4f6;
         }
         
-        .journey-table tr:hover {
-            background: #f8fafc;
-        }
-        
-        .journey-name {
+        .journey-title {
+            font-size: 1rem;
             font-weight: 600;
             color: #1f2937;
-            margin-bottom: 0.5rem;
+            margin: 0;
+            flex: 1;
+            line-height: 1.3;
+            word-break: break-word;
         }
         
-        .journey-comment {
-            color: #6b7280;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            max-width: 300px;
-        }
-        
-        .journey-channel {
-            background: #f3f4f6;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.8rem;
-            color: #374151;
-            font-weight: 500;
-        }
-        
-        .journey-complexity {
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-        
-        .target-date-input {
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-            font-size: 0.85rem;
-            width: 120px;
-            background: white;
-        }
-        
-        .target-date-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        .journey-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
         }
         
         .status-pill {
@@ -425,6 +421,45 @@
         .status-pending { background-color: #f59e0b; }
         .status-blocked { background-color: #ef4444; }
         .status-completed { background-color: #10b981; }
+        
+        .journey-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .journey-content.active {
+            max-height: 500px;
+        }
+        
+        .journey-details {
+            padding: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            width: 100px;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #6b7280;
+            flex: 1;
+        }
+        
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
         
         .footer {
             background: #f3f4f6;
@@ -479,48 +514,34 @@
                 min-width: auto;
             }
             
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .header .logo-container {
+                background: white;
+                padding: 0.375rem;
+                border-radius: 0.375rem;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .header svg {
+                width: 100px;
+                height: 30px;
+            }
+            
             .header h1 {
-                font-size: 1.75rem;
+                font-size: 1.5rem;
+                margin: 0;
             }
             
             .header p {
-                font-size: 0.95rem;
-            }
-            
-            .channels-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .channel-card {
-                padding: 1rem;
-            }
-            
-            .channel-title {
-                font-size: 1rem;
-            }
-            
-            .channel-count {
-                font-size: 0.75rem;
-                padding: 0.2rem 0.5rem;
-            }
-            
-            .channel-progress-label {
-                font-size: 0.8rem;
-                margin-bottom: 0.25rem;
-            }
-            
-            .channel-progress-value {
-                font-size: 0.8rem;
-                min-width: 35px;
-            }
-            
-            .channel-progress-item {
-                margin-bottom: 0.75rem;
-            }
-            
-            .channel-progress-content {
-                margin-right: 0.75rem;
+                font-size: 0.85rem;
+                margin: 0;
             }
             
             .journey-table th {
@@ -566,8 +587,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Customer Journey Optimization</h1>
-            <p>Executive Dashboard – Real-time Performance Tracking</p>
+            <h1 style="margin: 0; font-size: 2.5rem; font-weight: 600; text-align: center;">🚀 Customer Journey Optimization</h1>
+            <p style="margin: 0.5rem 0 0; opacity: 0.9; font-size: 1.1rem; text-align: center;">Executive Dashboard – Real-time Performance Tracking</p>
         </div>
 
         <div class="content">
@@ -768,7 +789,7 @@
         </div>
 
         <div class="footer">
-            <strong>Last updated:</strong> July 9, 2025 &nbsp;|&nbsp; 
+            <strong>Last updated:</strong> July 5, 2025 &nbsp;|&nbsp; 
             <strong>Focus:</strong> Unlock ATM channel, +12 implementations to hit 50% target
         </div>
     </div>
@@ -787,10 +808,17 @@
             },
             "objectives": [
                 "Optimize 224 customer journeys",
-                "Faster turnaround time", 
+                "Faster turnaround time",
                 "Improved customer satisfaction",
                 "Operational cost efficiency",
                 "Increased digital channel adoption"
+            ],
+            "progressData": [
+                { "name": "Total Identified Journeys", "value": 224 },
+                { "name": "Reviewed", "value": "224 (100%)" },
+                { "name": "Enhancements Implemented", "value": "100 (45%)" },
+                { "name": "Journeys in Progress", "value": "124 (55%)" },
+                { "name": "Target (Mid-Year)", "value": "100% reviewed/50% enhanced" }
             ],
             "channelData": [
                 { "channel": "Branches", "count": 35, "review": 100, "implementation": 66 },
@@ -807,4 +835,319 @@
                 ],
                 "atm": [
                     { "id": 1751709132656, "journey": "ATM language", "comment": "1. Based on customer profile\n2. Align language preference Ar to the right side and En to the left side", "complexity": "Complex = 4+ weeks", "status": "Pending" },
-                    { "id": 1751709149728, "journey": "
+                    { "id": 1751709149728, "journey": "Weather", "comment": "Remove from screen", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709163001, "journey": "Balance Inquiry ATM", "comment": "1. Language based on customer preference\n2. Top 3 services\n3. Art work\n4. Small icons", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709177073, "journey": "Card Activation (PIN Assignment) ATM", "comment": "1. Phrase amendment \"Enter OTP you will receive\"", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709191520, "journey": "Cardless withdrawal CID ATM", "comment": "When transaction is done pop up messsage \"Return card \" is shown!", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709206600, "journey": "Cardless withdrawal Mobile ATM", "comment": "1. When transaction is done pop up messsage \"Return card \" is shown!\n2. Main screen option\n3. Transaction completion phrase to be revised \"Your transaction is completed successfully\"", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709219904, "journey": "Cash Deposit ATM", "comment": "View on home page\nInstruction tutorial\nتعزيز أيداع الخراب الا أيداع الشيكات", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709233008, "journey": "USSD Subscription ATM", "comment": "1. Language\n2. Confirm\n3. Discuss decommision", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709248641, "journey": "Cash Withdrawal ATM", "comment": "Click 1 and it will withdraw 10 KD fast withdrawal\nScreen for 200 KD should indicate 10 Kd instead of 20 KD when cassette is finished", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709272048, "journey": "CID Update ATM", "comment": "", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709330584, "journey": "Credit card Inquiry ATM", "comment": "1. Language based on customer preference\n2. Top 3 services\n3. Art work\n4. Small icons", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709346960, "journey": "Credit Card payment ATM", "comment": "1. Cant return to first page of cards if you go to the second (more than 3 cards)\n2. Phrase \"Payment\"\n3. Card layout\n4. Name impossed", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709360976, "journey": "Fast cash", "comment": "Pivot for average based on location", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709377544, "journey": "Loyalty Points redemption ATM", "comment": "1. Points calculation? Points or KD\n2. Cashback or Rewards?", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709393144, "journey": "Mini Statement ATM", "comment": "Ugly screen - to be sent via email / SMS, instead of available balance it should be mini statement", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709411304, "journey": "NFC Deposit", "comment": "1. When transaction is done pop up messsage \"Return card \" is shown!\n2. Main screen option\n3. Transaction completion phrase to be revised \"Your transaction is completed successfully\"", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709427288, "journey": "NFC Withdrawal", "comment": "1. When transaction is done pop up messsage \"Return card \" is shown!\n2. Main screen option\n3. Transaction completion phrase to be revised \"Your transaction is completed successfully\"", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709443040, "journey": "PIN Change ATM", "comment": "1. Phrase \"Change PIN\"\n2. Phrase \"Collect your card\"", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709460208, "journey": "SMS Subscription ATM", "comment": "1. Language\n2. Confirm\n3. Discuss decommision", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709476128, "journey": "Special Needs Services ATM", "comment": "1. Menu provides language option however only english voice will be provided\n2. Mini statement Ar on provides available balance ملايين و الآف ...", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709493544, "journey": "Transfer (Other Account) ATM", "comment": "1. Language based on customer preference\n2. Top 3 services\n3. Art work\n4. Small icons", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709511857, "journey": "Transfer (Own Accounts) ATM", "comment": "1. Phrase \"Please wait\"\n2. Account validation", "complexity": "Complex = 4+ weeks", "status": "Pending" }
+                ],
+                "black": [
+                    { "id": 1751709587448, "journey": "Channels experience", "comment": "1. ATM theme\n2. App theme + details\n3. Contact center assistance\n4. RM clearance (Services/access/24-7/WhatsApp octopus)", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751709596536, "journey": "Messages", "comment": "1. SMS templates\n2. Whatsapp templates", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751709609056, "journey": "Onboarding", "comment": "1. welcome package\n2. Declaration", "complexity": "Simple = 1 week", "status": "Pending" }
+                ],
+                "branch": [
+                    { "id": 1, "journey": "Appointment Booking", "comment": "Online appointment scheduling system", "complexity": "Moderate = 2-3 weeks", "status": "Pending" }
+                ],
+                "contact-center": [
+                    { "id": 1751709962104, "journey": "White List", "comment": "1. No SLA\n2. Fraud team 1 hr\n3. Call back\n4. There has to be a declined transaction in orer to whitelist the fraudblock rule that caused the decline\nSend by fax", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709970648, "journey": "AccountLast5Transactions IVR", "comment": "If balance is zero it will only say zero\nDoes not mention available balance and current balance", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751709983631, "journey": "Beneficiaries", "comment": "1. AML triggered flow?", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751709998768, "journey": "Card delivery request", "comment": "1. is there evidence that customer was contacted by the branch?\n2. No SMS\n3. Review calls\nTawasul done", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710013951, "journey": "Wamd Enquiry", "comment": "Access for CC leaders on payment system", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710028488, "journey": "Card Printing", "comment": "1. App -> No front office alert -> call customer to confirm + location -> prepare to be ready for printing -> upon customer arrival - call us or ITM -> print card 3 min\n2. Report from printer only", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710042608, "journey": "Change Address", "comment": "Raise CR", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710060432, "journey": "Language", "comment": "Circular profile language and address w/Hassan", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751710074560, "journey": "ChangeTPIN", "comment": "Has to be reviewed from scratch", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710089495, "journey": "Claim", "comment": "1. Agent to directly submit through BPM no need to get approval from TL\n2. CR for refund SMS\n3. Instant claim is not instant and takes 1 working day", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710104039, "journey": "Upgrade Visa Card", "comment": "1. Why not process and print in ITM?", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710122048, "journey": "Credit card balance enquiry", "comment": "1. balance and past due given same amount\n2. wording", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751710137096, "journey": "Travel Insurance policy", "comment": "1. customer calls to issue travel insurance", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710156928, "journey": "Delivery Card Outside Kuwait", "comment": "1. receive request -> Full address + duration are minimum requirements -> issue card -> send email to cards unit -> cards take care of it -> stay duration 14 days\n2. No SLA\n3. No confirmation\n4. عائمه :)", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710172344, "journey": "Initial triggers (Systems)", "comment": "1. Tawasul\n2. BPM\n3. Workflow\nToo many platforms", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710189896, "journey": "Kyc Update", "comment": "1. App -> no notification on pending\n2. high risk -> access portal -> download form one by one -> cc approval via email -> submit in tawasul -> 1 working day\n3. in some cases request is returned to provide missing documents or to visit the branch\n4. back office no alert\n5. Pending request not a clear message\n2. Calls -> voice mail -> call back -> 5-7 min -> submit in tawasul -> call the customer -> no message if updated\nSend request to owner", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710205471, "journey": "Lg/Lc Enquiry", "comment": "Access for CC leaders", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710222696, "journey": "New prepaid card", "comment": "1. Request BPM access\n2. Allow issuance of debit and credit cards for a full digital experience", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710237616, "journey": "Online banking - change address", "comment": "1. Digital onborading fetching address in arabic\n2. Impact on local transfer\n3. no SLA", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710255832, "journey": "Online banking - change credit card limit", "comment": "1. decrease will submit workflow request to cards team\n2. increase will continue with new card application flow", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710273240, "journey": "Online banking - check book request", "comment": "1. reissue / first issue\n2. first issue must visit the branch and approval based on BM, on what grounds?\n3. No SLA\n4. No follow up\n5. Brnach not closing WF\n6. No report\nNot a good process in general", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710289415, "journey": "Online banking - contact", "comment": "1. Why create contact?\n2. If delay in any service let them submit complaint\n3. Branch to provide business card\nSMS confirmation\nAccess during holidays\nInforming customer", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710306103, "journey": "Online banking - EOS", "comment": "1. no reporting / feedback\n2. ebanking monitoring", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710321791, "journey": "Online banking - new finance", "comment": "1. script\n2. reject if fee balance not available\n3. impose name should populate existing", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710337104, "journey": "Online banking - new prepaid", "comment": "1. Agent to directly submit through BPM no need to get approval from TL\n2. CR for refund SMS\n3. Instant claim is not instant and takes 1 working day\nSMS confirmation\nInforming customer", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710353855, "journey": "Online banking - normal claim", "comment": "SMS confirmation\nInforming customer\nExceeding 45 days\nBranch / Ops not calculating days accurately\n*Closing staff should amend closing date", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710370783, "journey": "Online banking - release hold cards", "comment": "SMS confirmation\nAccess during holidays\nInforming customer", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710388336, "journey": "Online banking - release hold finance", "comment": "1. No SLA\n2. Fraud team 1 hr\n3. Call back\n4. There has to be a declined transaction in orer to whitelist the fraudblock rule that caused the decline\nTawasul done", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710404495, "journey": "Online banking - whitelist (fraud team)", "comment": "Access for CC leaders on payment system", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710420951, "journey": "Payment Inquiry", "comment": "Not validating sales of product", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710437928, "journey": "Referal sales", "comment": "1. SMS confirmation\n2. Informing customer\n3. Exceeding 45 days\n4. Branch / Ops not calculating days accurately\n*Closing staff should amend closing date\n5. Not hunting / collecting amounts\nAgents submits workflow to cards unit and takes 1 day, 45 days request is sent to cards --> Noura credit ops -> release in 1 day", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751710453639, "journey": "Release Hold ( Card )", "comment": "1. Need SMS confirmation\n2. Access during holidays\n3. Informing customer\nAgent submits workflow to collection to release and it takes 1 day", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710470400, "journey": "Release Hold ( Finance )", "comment": "1. STO customer -> calls -> not authenticated -> maybe benefits were credited and taken or STO stoppage submitted and not processed -> WF to collection unit -> May reply in action or to forward to credit ops\n2. No SLA\n3. Why not open account?\n4. عائمه :)", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751710488463, "journey": "Return Installment SO", "comment": "Description...", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751712275262, "journey": "Update Cid", "comment": "1. Add button to trigger PACI authentication", "complexity": "Complex = 4+ weeks", "status": "Pending" }
+                ],
+                "dst": [
+                    { "id": 1751709641360, "journey": "Credit card application", "comment": "1. double work 2. cortex -> issuer -> cc application -> create application for the customer -> RIM -> submit request in tawasul -> select instant/branch delivery -> card type -> staff name+RIM+branch -> limit + payment type + account -> BM/Boo in cortex -> aaplication + approval -> print -> change status to 32", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709650280, "journey": "Finance (All types)", "comment": "Description...", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709661472, "journey": "Open account RBD (All types)", "comment": "Wage account physical visit to keitan branch\nWeekend load on Sunday and Monday will increase account opening SLA from 15 min to 1 working day - manageing customer expectation and informing it will take 5 working days\nDaily reconciliation\nIBAN bulk certificate\nCard delivery - courier issue, no centralized number", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709675232, "journey": "Paytally contracts (Vendor customers)", "comment": "Description...", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751709690032, "journey": "Paytally contracts (Vendor)", "comment": "1. Lengthy process\n2. Multiple touch points (Tawasul, Shariaa, Q&C, RBD-GM, Vendor management, Operation, Eman qasem)\n3. No tracking of declined contracts\n4. Different forms based on vendor sector\n5. إقرار تنازل", "complexity": "Complex = 4+ weeks", "status": "Pending" }
+                ],
+                "itm": [
+                    { "id": 1751709710720, "journey": "Cash deposit ITM", "comment": "Cannot deposit more than 3,000?\nNo source of fund", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751709720112, "journey": "Cheque Encashment ITM", "comment": "Description...", "complexity": "Simple = 1 week", "status": "Pending" }
+                ],
+                "application": [
+                    { "id": 1751652378272, "journey": "Advisory", "comment": "1. Card visuals\n2. Cashback, no button to direct to redemption page\n3. Service layout", "complexity": "Simple = 1 week", "status": "In Progress" },
+                    { "id": 1751652396264, "journey": "Login", "comment": "1. Session time out, to provide extend session option or extend from back end\n2. Log out is hidden in profile page, look into market ", "complexity": "Simple = 1 week", "status": "In Progress" },
+                    { "id": 1751652412040, "journey": "KIB pay", "comment": "1. First and second name are provided to recepient, look into first and last name\n2. If application language is in AR and link sent in EN the recepeint will receive link in AR and vice versa\n3. Look into shortening link\n4. Link title \"New payment request\", look into having a unique name \"KIB pay, payment request\"", "complexity": "Simple = 1 week", "status": "In Progress" },
+                    { "id": 1751657592612, "journey": "Delete Beneficiary -", "comment": "Disclaimer is too long\ndeleted beneficiary page hanged once done", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751657616692, "journey": "Finance Payment - Kwd", "comment": "1. بريقة في جدولة after monthly installment payment\n2. En version showing finance name in AR مراجعة مواد بيداء\n3. Partially paid after monthly installment payment", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751657639700, "journey": "KIB rewards", "comment": "1. Face ID / Password\n2. Governate & area wording", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751657658291, "journey": "Limit control", "comment": "1. Revise limit description (medium-low)\n2. Request sent disclaimer revise wording\n3. By operation limit\n4. Auto approve customized within limit", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751657681044, "journey": "Transfer Kib To Account - Standing Order - Usd", "comment": "1. Country flag\n2. USD to KD and vice versa option\n3. Conversion rate", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751657995651, "journey": "Swift Go", "comment": "1. Disclaimer max/min limit\n2. Equivalent --> equivalent to\n3. Option to select currency to transfer from KWD --> Foreign currency\n4. max 5 letters --> Check capitalization", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751658168795, "journey": "Transfer To Own Account - Standing Order - Usd", "comment": "1. Country flag\n2. USD to KD and vice versa option\n3. Conversion rate", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751658184979, "journey": "Transfer To Local Bank Account - Usd", "comment": "1. Country flag\n2. USD to KD and vice versa option\n3. Conversion rate", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751658201659, "journey": "Wakala deposit auto renewal", "comment": "To provide an option when opening Wakala deposits via mobile banking", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658222227, "journey": "Transfer Kib To Account - Standing Order - Kwd", "comment": "1. Sender discretion?\n2. Other currencies\n3. Edit STO details", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658242027, "journey": "Transfer To Own Account - Standing Order - Kwd", "comment": "1. Sender discretion?\n3. Edit STO details", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658260243, "journey": "Password Recovery -", "comment": "Forgot password: the following image is not accurate as it is due to session expiry and not password expiry, I was able to perform the process again and use the same password.\nعند استرجاع كلمة المرور الخيارات تذكر ادخال كلمة المرور و تأكيد كلمة المرور و لكن الضوابط تذكر كلمة السر و تأكيد كلمة السر", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658280947, "journey": "Transfer To Own Account - Usd", "comment": "1. Field validation: to replace \"required\" with \"Mandatory field\" or just keep the available disclaimer if the customer leaves it empty a message notification will mention the required minimum amount, the same goes for the Arabic version from.\n2. currency conversion\n3. ability to select transfer from in foreign and in KD currency", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751658298917, "journey": "Report Lost/Stolen/Damaged Credit Card -", "comment": "Report Lost/Stolen/Damaged Credit Card -", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658310331, "journey": "Re-Activate Debit Card -", "comment": "arabic disclaimer to unpause needs revising - arrage with saleh alathari to revamp retail online banking dashboard", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751658341731, "journey": "Email Update -", "comment": "Opens message center then provides drop down option!", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751658359363, "journey": "Clearance Certificate -", "comment": "Clearance document!\nEmail/courier option", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751663400639, "journey": "Apply For A Finance -", "comment": "(+) to apply is not clear\n3 types of finance is available, what about the rest\nSpelling of installment Done", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751663439375, "journey": "Profile page", "comment": "My profile: tab is not visible / no indication that there is a menu", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751663462015, "journey": "Manage ATM card", "comment": "Manage ATM card: to view this menu a customer must select the account and then select manage ATM card, looking to have all ATM cards under card menu where they are visible from the main page.", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663483903, "journey": "Online banking - clearance certificate", "comment": "1. request validity check\n2. disable if customer has liability", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663504911, "journey": "CID update", "comment": "New journey to update CID only", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663525038, "journey": "Kyc Update -", "comment": "1. Pop-up? To indicate update\n2. Check validity status count down\n3. Wording to continue KYC\n4. CID update alone option\n5. Revise unable to update sentence\n6. \"I am not US person\" --> US citizen\n7. Wording اقرار\n8. Marital status --> capitalization\n9. Kids number --> Number of kids\n10. Business proceeds --> Business income\n11. If customer selects addres changed he needs to upload CID! why?\n12. Bi-annually --> biannual + other instances where duration drop down is provided\n13. Check banks lists --> Ahli united banks + Warba", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663548831, "journey": "International Transfer - Standing Order - Usd", "comment": "1. Revise semi monthly\n2. Option to choose amount from KD to foreign and vice versa\n3. Edit STO is not available\n4. Revise STO delete message --> Why contact center?", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663565142, "journey": "Re-Activate Prepaid Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663585847, "journey": "Stop Prepaid Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663604246, "journey": "Stop Debit Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663624487, "journey": "Transfer To Local Bank Account - Standing Order - Kwd", "comment": "1. Sender discretion?\n3. Edit STO details", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663653295, "journey": "Re-Activate Credit Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Simple = 1 week", "status": "Pending" },
+                    { "id": 1751663671439, "journey": "Stop Credit Card Request -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663690159, "journey": "Report Lost/Stolen/Damaged Prepaid Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751663706807, "journey": "Registration", "comment": "1. Need to check through online banking flow\n2. Change Our to Your paci authentication disclaimer\n3. user name disclaimer if bad word entered\n4. change phrase, upper and lower case\n5. password matching phrase revise\n6. security question \"merried\"\n7. Online registration design and layout", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663726158, "journey": "Add beneficiary", "comment": "Add tab to scroll down\nLocal IBAN validator on adding beneficiary\nError for IBANN/Acc# in arabic\nخيار تحويل المستفيد - Only one option", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663746423, "journey": "Report Lost/Stolen/Damaged Debit Card -", "comment": "1. add damage replace option\n2. add disclaimer to hand in damaged card\n3. sms / notify kib agent to follow up", "complexity": "Moderate = 2-3 weeks", "status": "Pending" },
+                    { "id": 1751663768847, "journey": "Charity Payment - Kwd", "comment": "Name in others list\n(+) to apply is not clear\nSame logo used for different charity", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663788991, "journey": "Apply For A Card -", "comment": "No validation\nCheck min limit\nOnly one option (Platinum)\nSequence of monthly plan\n\"Insert\" name she be enter\nBranch names amendment", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663809127, "journey": "WAMD transfer", "comment": "1. Transaction fail\n2. Unable to unlink only deactivate --> if number is registered to another KIB account I am unable to register in WAMD in that account", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663828279, "journey": "WAMD payment request", "comment": "1. Transaction fail\n2. Unable to unlink only deactivate --> if number is registered to another KIB account I am unable to register in WAMD in that account", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663849031, "journey": "Debit Card Travel Notification -", "comment": "Need fraud rules list, travel experience", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663869446, "journey": "Credit Card Travel Notification -", "comment": "1. Need fraud rules list, travel experience\n2. Disclaimer when applying travel notification --> SMS disabled and email enabled for better customer experience.", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663887870, "journey": "International Transfer - Usd", "comment": "Select Account / Select beneficiary small letter\nAdd country flag beneficiary drop down\nAdd country flag after selecting\nPayment type should be transfer type\nI Pay fees small letter\nAmount equevlent - Amount equevlanet to\nCorrerspondant fees showing 0 but total is adding 5 KWD\nReason Max should be Min\nموصي به - الخيار الأنسب / الخيار الأفضل\nباللغة العربية يوجد خانات باللغة الانجليزية\nيتم التحويل - سيتم التحويل في يوم العمل التالي", "complexity": "Complex = 4+ weeks", "status": "Pending" },
+                    { "id": 1751663906630, "journey": "Cardless Payment - Kwd", "comment": "Location to show\nProper error - share\nRelease hold??", "complexity": "Complex = 4+ weeks", "status": "Pending" }
+                ],
+                "branches": [
+                    { "id": 1751709774048, "journey": "Authority matrix", "comment": "1. Review and revise\n1. Authority matrix\n2. Too much mapping\n3. No SLA\n4. Statement leakage fees\n5. No track on authority matrix available limit\n6. Review message content for fee deduction", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709782192, "journey": "Fee_And_Refund (Waive)", "comment": "7. for refund no message", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709807904, "journey": "Finance application", "comment": "Description...", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709818192, "journey": "Fixed_Deposit", "comment": "Process for customer follow up\nAdd SMS for creating deposit\nSMS for deposit renewal\nSMS for deposit maturity\nSMS for deposit break", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709827280, "journey": "Issue_Certificate_Req / Car_Lien_Release", "comment": "1. No set role\n2. Liability: BPM->SO/RO->general form request Tawasul->Customer sign & BM sign-> collect 5 KD->BPM->sent to retention\n3. 5 days to process\n4. Call customer to collect original\n5. Athurised signature A/B\n6. Clearance: Ro/So to check customer liabilities and then continue similar to liabilities", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709839584, "journey": "Kib_Chequebook_Request", "comment": "1. Review steps -> RO/SO -> Cheque book request -> staff checks current account -> BM approval -> Submit in BPM -> ops support -> check backlist + fees -> 2 to 3 cheque book delivery -> branch collects -> branch ops collects -> call the custome -> upon customer arrival send blacklist check to ops support -> ops activates -> customer signs recieval form", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709853552, "journey": "Kib_Debit_Card_Ins_IsS", "comment": "1. BPM / cortex\n2. BPM -> New account -> Issue card -> authorize in cortex by operation -> print from cortex\n3. cortex -> Issuer -> RO/SO/RM -> Card -> Card issuance -> get detail from host -> CID/RIM -> Send to BM/Boo -> approve -> print: can be done by 2, change status to activate in ATM/App", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709868576, "journey": "Kib_Standing_Instruct", "comment": "1. SO/Ro -> company documents -> fill application SO -> upload in taasul -> ops -> review documents and deduct fees 10KD -> 1 to 2 days -> customer takes documents\n2. KIB issue with Rajhi and warba bank -> they don't have an account with KIB\n3. Check SMS", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709881464, "journey": "Phase_2_Claim_Req", "comment": "1. Fraud / Instant / Normal\n2. Fraud -> SO -> KYC -> Online action (Block) -> Stop card -> replacement -> claim BPM -> duration 30 min to 1 hr -> lengthy process + long duration\n3. Instant -> apply criteria Kuwaity/Salary -> request approval in tawasul per authority matrix\n4. Normal -> So -> submit in BPM cash deposit / cash withdrawal", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709895848, "journey": "Prepaid_Card_Req + credit card", "comment": "1. double work\n2. cortex -> issuer -> cc application -> create application for the customer -> RIM -> submit request in tawasul -> select instant/branch delivery -> card type -> staff name+RIM+branch -> limit + payment type + account -> BM/Boo in cortex -> aaplication + approval -> print -> change status to 32", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709912424, "journey": "Safe Deposit Locker Charge", "comment": "1. Locker locator\n2. SMS alert before renewal\n3. Head teller and BOO to escort customer to vault\n4. Admin to provide vault layout\n5. Create excel sheet with vault layout in order to check availability and allow customer to select prior to visiting the vault", "complexity": "Complex = 4+ weeks", "status": "In Progress" },
+                    { "id": 1751709926648, "journey": "Staff up (new role)", "comment": "1. Internal job posting\n2. Committee, Ops-Sales-SQU\n3. HR training 3 weeks", "complexity": "Complex = 4+ weeks", "status": "In Progress" }
+                ]
+            },
+            "timestamp": "2025-07-05T10:49:25.365Z"
+        };
+
+        // Flatten journeys and add channel info
+        function flattenJourneys(journeysData) {
+            const flattened = [];
+            for (const channel in journeysData) {
+                if (Array.isArray(journeysData[channel])) {
+                    journeysData[channel].forEach(journey => {
+                        flattened.push({
+                            ...journey,
+                            channel: channel === 'contact-center' ? 'Contact-center' : 
+                                   channel === 'atm' ? 'Atm' :
+                                   channel === 'itm' ? 'Itm' :
+                                   channel === 'dst' ? 'Dst' :
+                                   channel.charAt(0).toUpperCase() + channel.slice(1)
+                        });
+                    });
+                }
+            }
+            return flattened;
+        }
+
+        // Render channels
+        function renderChannels() {
+            const channelsGrid = document.getElementById('channelsGrid');
+            const channelFilter = document.getElementById('channelFilter');
+            
+            channelsGrid.innerHTML = '';
+            channelFilter.innerHTML = '<option value="">All Channels</option>';
+
+            dashboardData.channelData.forEach(channel => {
+                // Channel card
+                const channelCard = document.createElement('div');
+                channelCard.className = 'channel-card';
+                channelCard.innerHTML = `
+                    <div class="channel-header">
+                        <div class="channel-title">${channel.channel}</div>
+                        <div class="channel-count">${channel.count} journeys</div>
+                    </div>
+                    <div class="channel-progress-item">
+                        <div class="channel-progress-content">
+                            <div class="channel-progress-label">Reviewed</div>
+                            <div class="channel-progress-bar-container">
+                                <div class="channel-progress-bar progress-reviewed" style="width: ${channel.review}%;"></div>
+                            </div>
+                        </div>
+                        <div class="channel-progress-value">${channel.review}%</div>
+                    </div>
+                    <div class="channel-progress-item">
+                        <div class="channel-progress-content">
+                            <div class="channel-progress-label">Implemented</div>
+                            <div class="channel-progress-bar-container">
+                                <div class="channel-progress-bar progress-implemented" style="width: ${channel.implementation}%;"></div>
+                            </div>
+                        </div>
+                        <div class="channel-progress-value">${channel.implementation}%</div>
+                    </div>
+                `;
+                channelsGrid.appendChild(channelCard);
+
+                // Filter option
+                const option = document.createElement('option');
+                option.value = channel.channel;
+                option.textContent = channel.channel;
+                channelFilter.appendChild(option);
+            });
+        }
+
+        // Render journeys as table
+        function renderJourneys(journeys) {
+            const journeysList = document.getElementById('journeysList');
+            
+            if (journeys.length === 0) {
+                journeysList.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 2rem;">No journeys found matching your criteria.</p>';
+                return;
+            }
+
+            let tableHTML = `
+                <table class="journey-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Journey</th>
+                            <th style="width: 30%;">Comment</th>
+                            <th style="width: 12%;">Channel</th>
+                            <th style="width: 15%;">Complexity</th>
+                            <th style="width: 10%;">Status</th>
+                            <th style="width: 8%;">Target Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            journeys.forEach(journey => {
+                const statusClass = journey.status === 'In Progress' ? 'status-in-progress' :
+                                  journey.status === 'Pending' ? 'status-pending' :
+                                  'status-completed';
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="journey-name">${journey.journey}</div>
+                        </td>
+                        <td>
+                            <div class="journey-comment">${journey.comment || 'No comment provided.'}</div>
+                        </td>
+                        <td>
+                            <span class="journey-channel">${journey.channel}</span>
+                        </td>
+                        <td>
+                            <div class="journey-complexity">${journey.complexity}</div>
+                        </td>
+                        <td>
+                            <span class="status-pill ${statusClass}">${journey.status}</span>
+                        </td>
+                        <td>
+                            <input type="date" class="target-date-input" onchange="updateTargetDate(${journey.id}, this.value)">
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            journeysList.innerHTML = tableHTML;
+        }
+
+        // Function to handle target date updates
+        function updateTargetDate(journeyId, date) {
+            // Store the target date (in a real application, this would save to database)
+            console.log(`Journey ${journeyId} target date updated to: ${date}`);
+            // You can add additional logic here to save the date
+        }
+
+        // Filter journeys
+        function filterJourneys() {
+            const selectedChannel = document.getElementById('channelFilter').value;
+            const selectedComplexity = document.getElementById('complexityFilter').value;
+            const selectedStatus = document.getElementById('statusFilter').value;
+
+            let filtered = allJourneys;
+
+            if (selectedChannel) {
+                filtered = filtered.filter(journey => journey.channel === selectedChannel);
+            }
+
+            if (selectedComplexity) {
+                filtered = filtered.filter(journey => journey.complexity === selectedComplexity);
+            }
+
+            if (selectedStatus) {
+                filtered = filtered.filter(journey => journey.status === selectedStatus);
+            }
+
+            renderJourneys(filtered);
+        }
+
+        // Initialize
+        const allJourneys = flattenJourneys(dashboardData.journeysData);
+        
+        renderChannels();
+        renderJourneys(allJourneys);
+
+        // Event listeners
+        document.getElementById('channelFilter').addEventListener('change', filterJourneys);
+        document.getElementById('complexityFilter').addEventListener('change', filterJourneys);
+        document.getElementById('statusFilter').addEventListener('change', filterJourneys);
+
+        // Make functions globally accessible
+        window.updateTargetDate = updateTargetDate;
+    </script>
+</body>
+</html>
